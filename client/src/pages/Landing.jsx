@@ -3,8 +3,8 @@ import React from "react";
 import Folder from "../assets/Landing.png";
 const Landing = () => {
   return (
-    <div className="w-screen">
-      <div className="max-w-[1400px] h-[calc(100vh-80px)] mx-auto grid place-content-center  grid-cols-2">
+    <div className="w-screen px-4">
+      <div className="max-w-[1400px] min-h-[calc(100vh-160px)]  mx-auto grid place-content-center  grid-cols-1 md:grid-cols-2">
         <div className="grid place-content-center">
           <h1 className="text-h1 font-roboto font-bold text-textColor">
             CEIT Manuscript <br /> Information System

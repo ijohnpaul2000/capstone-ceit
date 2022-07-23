@@ -1,15 +1,16 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../features/authSlice";
 
-import People from "../assets/People.png";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 
+import { ToastContainer } from "react-toastify";
 import { notifyToast } from "../utils/notifyToast";
+
+import People from "../assets/People.png";
 
 const UserLogin = () => {
   const URL = "http://localhost:5000/api/auth/user";
@@ -28,6 +29,7 @@ const UserLogin = () => {
     password: Yup.string().required("Password is required"),
   });
 
+  console.log(currentUser);
   const loginUser = (data) => {
     axios
       .post(URL, data)
@@ -45,9 +47,10 @@ const UserLogin = () => {
   };
 
   return (
-    <div className="w-screen h-full px-4">
-      <div className="max-w-[1400px] h-[calc(100vh-80px)] mx-auto grid grid-cols-1 md:grid-cols-2 place-content-center">
-        <div className="">
+    <div className="w-screen h-full px-4 ">
+      <div className="max-w-[1400px] min-h-[calc(100vh-160px)] mx-auto grid grid-cols-1 gap-x-4 md:grid-cols-2 place-content-center">
+        {/* LEFT PANEL */}
+        <div className="flex flex-col justify-center">
           <h1 className="text-h1 font-roboto font-bold text-textColor">
             Login
           </h1>
@@ -81,7 +84,7 @@ const UserLogin = () => {
                 />
               </div>
 
-              <div className="grid gap-y-1">
+              <div className="grid gap-y-4">
                 <label
                   htmlFor="password"
                   className="text-h4 font-roboto font-medium text-textColor"
@@ -101,9 +104,13 @@ const UserLogin = () => {
                   className="py-4 px-2 bg-inputBox rounded-xl"
                 />
               </div>
-              <div className="bg-green-400 py-4 font-roboto px-4 rounded-xl text-white">
-                {currentUser && <p>Welcome {currentUser.username}!</p>}
-              </div>
+
+              {currentUser && (
+                <div className="bg-green-400 py-4 font-roboto px-4 rounded-xl text-white">
+                  <p>Welcome {currentUser.username}!</p>
+                </div>
+              )}
+
               <div className="w-full h-full flex justify-end">
                 <button
                   type="submit"
@@ -115,25 +122,26 @@ const UserLogin = () => {
             </Form>
           </Formik>
         </div>
-        <div className="w-full h-full flex items-center ">
+        {/* RIGHT PANEL */}
+        <div className="w-full h-full flex flex-col items-center pb-20 md:pb-0">
           <img
             src={People}
             alt="People Logo"
             className="w-full  max-w-[550px] mx-auto object-cover"
           />
+          <div className=" max-w-[550px]">
+            <h1 className="text-h2 font-roboto font-medium text-textColor text-center">
+              Browsing Manuscripts made easier!
+            </h1>
+            <p className="text-p font-roboto font-normal text-textColor text-center">
+              Through CEIT Manuscript Information System, everything is made
+              clean, less time-consuming, and easy to maintain. Be sure to login
+              to gain special permissions
+            </p>
+          </div>
         </div>
       </div>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer />
     </div>
   );
 };

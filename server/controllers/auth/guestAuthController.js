@@ -23,7 +23,9 @@ const loginGuest = expressAsyncHandler(async (req, res) => {
   res.status(200).json({
     _guestId: existingGuest._guestId,
     guestUsername,
-    guestPassword,
+    permittedBy: existingGuest.permittedBy,
+    createdAt: existingGuest.createdAt,
+    expired: existingGuest.expiredAt,
     token: generateToken(existingGuest._guestId),
   });
 });

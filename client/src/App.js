@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import SharedLayout from "./layout/SharedLayout";
 import Dashboard from "./pages/Dashboard";
 import GuestLogin from "./pages/GuestLogin";
@@ -17,6 +17,7 @@ function App() {
 
         <Route path={`/manuscript/dashboard`} element={<Dashboard />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }

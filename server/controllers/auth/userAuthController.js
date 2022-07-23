@@ -20,7 +20,7 @@ const loginUser = expressAsyncHandler(async (req, res) => {
   res.status(200).json({
     _userId: existingUser._userId,
     username,
-    password,
+    role: existingUser.role,
     token: generateToken(existingUser._userId),
   });
 });
