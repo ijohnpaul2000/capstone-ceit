@@ -1,5 +1,24 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import SharedLayout from "./layout/SharedLayout";
+import Dashboard from "./pages/Dashboard";
+import GuestLogin from "./pages/GuestLogin";
+import Landing from "./pages/Landing";
+import UserLogin from "./pages/UserLogin";
 function App() {
-  return <p className="text-8xl">HELLO WORLD</p>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SharedLayout />}>
+          <Route path="/" element={<Landing />} />
+          <Route path={`/auth/user`} element={<UserLogin />} />
+          <Route path={`/auth/guest`} element={<GuestLogin />} />
+        </Route>
+
+        <Route path={`/manuscript/dashboard`} element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
