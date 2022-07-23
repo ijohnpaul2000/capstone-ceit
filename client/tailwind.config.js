@@ -4,8 +4,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bg: "F9FBFF",
-        inputBox: "F0F5FF",
+        bg: "#F9FBFF",
+        inputBox: "#F0F5FF",
         shadow: "#D8E1F3",
         modalColor: "#FAFBFF",
         modalShadow: "#F0F5FF8C",
