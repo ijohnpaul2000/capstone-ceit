@@ -3,6 +3,7 @@ import axios from "axios";
 const initialState = {
   thesis: [],
   isLoading: false,
+  isSubmitting: false,
   error: null,
 };
 
@@ -35,6 +36,9 @@ const thesisSlice = createSlice({
       state.isLoading = false;
       state.error = null;
     },
+    setIsSubmitting: (state, action) => {
+      state.isSubmitting = action.payload;
+    },
   },
   extraReducers: {
     [getThesis.pending]: (state, action) => {
@@ -51,5 +55,5 @@ const thesisSlice = createSlice({
   },
 });
 
-export const { setThesis, resetState } = thesisSlice.actions;
+export const { setThesis, resetState, setIsSubmitting } = thesisSlice.actions;
 export default thesisSlice.reducer;

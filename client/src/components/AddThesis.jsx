@@ -5,8 +5,10 @@ import { Divider } from "primereact/divider";
 import { initialValues, validationSchema } from "../yupUtils/thesis/addThesis";
 import { useFormik } from "formik";
 
+import { setIsSubmitting } from "../features/thesisSlice";
 import { closeModal } from "../features/modalSlice";
 import { useSelector, useDispatch } from "react-redux";
+
 import { useRef } from "react";
 
 import axios from "axios";
@@ -55,6 +57,8 @@ const AddThesis = () => {
       })
         .then((res) => {
           notifyToast("Thesis Created!", "success");
+          dispatch(setIsSubmitting(true));
+          dispatch(setIsSubmitting(false));
         })
         .catch((err) => {
           notifyToast(err.response.data.message, "error");
@@ -67,7 +71,9 @@ const AddThesis = () => {
       header="Create Thesis"
       visible={currentModal}
       style={{ width: "50vw" }}
-      onHide={() => dispatch(closeModal())}
+      onHide={() => {
+        dispatch(closeModal());
+      }}
     >
       <form onSubmit={formik.handleSubmit} className="addThesisForm">
         <div className="grid grid-cols-1 lg:grid-cols-[66%,33%] gap-4 ">
@@ -131,7 +137,8 @@ const AddThesis = () => {
                 <input
                   id="section"
                   name="section"
-                  type="text"
+                  type="number"
+                  min={0}
                   className="w-full"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -152,7 +159,9 @@ const AddThesis = () => {
                 <input
                   id="yearLevel"
                   name="yearLevel"
-                  type="text"
+                  type="number"
+                  min={1}
+                  max={5}
                   className="w-full"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -268,7 +277,8 @@ const AddThesis = () => {
                 <input
                   id="copies"
                   name="copies"
-                  type="text"
+                  type="number"
+                  min={0}
                   className="w-full"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -289,7 +299,8 @@ const AddThesis = () => {
                 <input
                   id="volume"
                   name="volume"
-                  type="text"
+                  type="number"
+                  min={0}
                   className="w-full"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -310,7 +321,9 @@ const AddThesis = () => {
                 <input
                   id="grades"
                   name="grades"
-                  type="text"
+                  type="number"
+                  min={1}
+                  step={0.01}
                   className="w-full"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
