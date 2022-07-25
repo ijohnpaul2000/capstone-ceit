@@ -3,3 +3,21 @@
 @tailwind utilities;
 
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap");
+
+@layer base {
+  .addThesisForm input {
+    @apply border-[1px] border-gray-500 rounded-lg py-3 px-2 mt-2;
+  }
+  .addThesisForm textarea {
+    @apply bg-inputBox border-[1px] border-gray-500 rounded-lg py-3 px-2 mt-2;
+  }
+  .fileUpload {
+    @apply mt-4;
+  }
+  .fileUpload input {
+    @apply border-none rounded-lg py-3 px-2 mt-2;
+  }
+  .files {
+    @apply border-none;
+  }
+}

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { login } from "../features/authSlice";
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { initialValues, validationSchema } from "../yupUtils/auth/guestLogin";
 import axios from "axios";
 
 import { ToastContainer } from "react-toastify";
@@ -18,16 +18,6 @@ const GuestLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.user);
-
-  const initialValues = {
-    guestUsername: "",
-    guestPassword: "",
-  };
-
-  const validationSchema = Yup.object().shape({
-    guestUsername: Yup.string().required("Guest Username is required"),
-    guestPassword: Yup.string().required("Guest Password is required"),
-  });
 
   const loginGuest = (data) => {
     axios

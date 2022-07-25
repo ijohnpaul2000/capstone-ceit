@@ -11,8 +11,11 @@ const guestRouter = require("./routers/guestRoutes");
 //* Importing the routers for Authentication
 const userAuthRouter = require("./routers/auth/userAuthRoutes");
 const guestAuthRouter = require("./routers/auth/guestAuthRoutes");
+const thesisRouter = require("./routers/thesisRoutes");
+
 //* Variables
 const PORT = process.env.PORT || 5000;
+
 //* Database
 const db = require("./models");
 
@@ -24,6 +27,7 @@ app.use(cors({ origin: "http://localhost:3000" }));
 //* Routers
 app.use("/api/users", userRouter);
 app.use("/api/guests", guestRouter);
+app.use("/api/thesis", thesisRouter);
 
 //* Routers for AUTHENTICATION
 app.use("/api/auth/user", userAuthRouter);

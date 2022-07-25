@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AddThesis from "./components/AddThesis";
 import Footer from "./components/Footer";
+import Table from "./components/Table";
 import SharedLayout from "./layout/SharedLayout";
 import Dashboard from "./pages/Dashboard";
 import GuestLogin from "./pages/GuestLogin";
@@ -15,7 +17,7 @@ function App() {
           <Route path={`/auth/guest`} element={<GuestLogin />} />
         </Route>
 
-        <Route path={`/manuscript/dashboard`} element={<Dashboard />} />
+        <Route path={`/manuscript/dashboard`} element={<Table />} />
       </Routes>
       <Footer />
     </BrowserRouter>

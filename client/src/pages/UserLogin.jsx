@@ -1,16 +1,17 @@
 import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
-import { login } from "../features/authSlice";
+import { login, resetLoading, resetState } from "../features/authSlice";
 
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
+import { initialValues, validationSchema } from "../yupUtils/auth/userLogin";
 import axios from "axios";
 
 import { ToastContainer } from "react-toastify";
 import { notifyToast } from "../utils/notifyToast";
 
 import People from "../assets/People.png";
+import { useEffect } from "react";
 
 const UserLogin = () => {
   const URL = "http://localhost:5000/api/auth/user";
@@ -18,33 +19,35 @@ const UserLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.user);
+  const isLoading = useSelector((state) => state.auth.isLoading);
 
-  const initialValues = {
-    username: "",
-    password: "",
-  };
+  //* Formik automatically handles form validation and submission by declaring parameters in the formik hooks
 
-  const validationSchema = Yup.object().shape({
-    username: Yup.string().required("Username is required"),
-    password: Yup.string().required("Password is required"),
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      axios
+        .post(URL, values)
+        .then((res) => {
+          notifyToast("Success! Redirecting...", "success");
+          setTimeout(() => {
+            navigate("/manuscript/dashboard");
+          }, 3000);
+          dispatch(login(res.data));
+          console.log(res.data);
+
+          //* localStorage.setItem("User", res.data.token);
+        })
+        .catch((err) => {
+          notifyToast(err.response.data.message.toString(), "error");
+        });
+    },
   });
 
-  console.log(currentUser);
-  const loginUser = (data) => {
-    axios
-      .post(URL, data)
-      .then((res) => {
-        console.log(res);
-        notifyToast("Success! Redirecting...", "success");
-        setTimeout(() => {
-          navigate("/manuscript/dashboard");
-        }, 3000);
-        dispatch(login(res.data));
-      })
-      .catch((err) => {
-        notifyToast(err.response.data.message.toString(), "error");
-      });
-  };
+  useEffect(() => {
+    dispatch(resetState());
+  }, []);
 
   return (
     <div className="w-screen h-full px-4 ">
@@ -58,69 +61,73 @@ const UserLogin = () => {
           <p className="text-h4 font-roboto font-medium text-textColor">
             Hello There! Log in to continue and get started.
           </p>
-          <Formik
-            onSubmit={loginUser}
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-          >
-            <Form className="mt-10 grid gap-y-6">
-              <div className="grid gap-y-4">
-                <label
-                  htmlFor="username"
-                  className="text-h4 font-roboto font-medium text-textColor"
-                >
-                  Username
-                </label>
-                <ErrorMessage
-                  name="username"
-                  component="span"
-                  className="text-red-400"
-                />
-                <Field
-                  autoComplete="off"
-                  id="username"
-                  name="username"
-                  className="py-4 px-2 bg-inputBox rounded-xl"
-                />
-              </div>
 
-              <div className="grid gap-y-4">
-                <label
-                  htmlFor="password"
-                  className="text-h4 font-roboto font-medium text-textColor"
-                >
-                  Password
-                </label>
-                <ErrorMessage
-                  name="password"
-                  component="span"
-                  className="text-red-400"
-                />
-                <Field
-                  type="password"
-                  autoComplete="off"
-                  id="password"
-                  name="password"
-                  className="py-4 px-2 bg-inputBox rounded-xl"
-                />
-              </div>
+          <form className="mt-10 grid gap-y-6" onSubmit={formik.handleSubmit}>
+            <div className="grid gap-y-4">
+              <label
+                htmlFor="username"
+                className="text-h4 font-roboto font-medium text-textColor"
+              >
+                Username
+              </label>
 
-              {currentUser && (
-                <div className="bg-green-400 py-4 font-roboto px-4 rounded-xl text-white">
-                  <p>Welcome {currentUser.username}!</p>
-                </div>
-              )}
+              {formik.touched.username && formik.errors.username ? (
+                <div className="text-red-400">{formik.errors.username}</div>
+              ) : null}
+              <input
+                id="username"
+                name="username"
+                type="text"
+                className="py-4 px-2 bg-inputBox rounded-xl"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.username}
+              />
+            </div>
 
-              <div className="w-full h-full flex justify-end">
-                <button
-                  type="submit"
-                  className="px-12 py-2 rounded-xl text-h4 font-roboto font-medium text-white bg-button"
-                >
-                  Log in
-                </button>
+            <div className="grid gap-y-4">
+              <label
+                htmlFor="password"
+                className="text-h4 font-roboto font-medium text-textColor"
+              >
+                Password
+              </label>
+
+              {formik.touched.password && formik.errors.password ? (
+                <div className="text-red-400">{formik.errors.password}</div>
+              ) : null}
+              <input
+                id="password"
+                name="password"
+                type="password"
+                className="py-4 px-2 bg-inputBox rounded-xl"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
+              />
+            </div>
+
+            {currentUser && (
+              <div className="bg-green-400 py-4 font-roboto px-4 rounded-xl text-white">
+                <p>Welcome {currentUser.username}!</p>
               </div>
-            </Form>
-          </Formik>
+            )}
+
+            <div className="w-full h-full flex justify-end">
+              <button
+                type="submit"
+                className="px-12 py-2 rounded-xl text-h4 font-roboto font-medium text-white bg-button"
+              >
+                {isLoading ? (
+                  <>
+                    <p className="pi pi-spin pi-spinner"></p>
+                  </>
+                ) : (
+                  "Log In"
+                )}
+              </button>
+            </div>
+          </form>
         </div>
         {/* RIGHT PANEL */}
         <div className="w-full h-full flex flex-col items-center pb-20 md:pb-0">
