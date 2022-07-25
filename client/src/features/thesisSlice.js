@@ -30,6 +30,11 @@ const thesisSlice = createSlice({
     setThesis: (state, action) => {
       state.thesis = action.payload;
     },
+    resetState: (state) => {
+      state.thesis = [];
+      state.isLoading = false;
+      state.error = null;
+    },
   },
   extraReducers: {
     [getThesis.pending]: (state, action) => {
@@ -46,5 +51,5 @@ const thesisSlice = createSlice({
   },
 });
 
-export const { setThesis } = thesisSlice.actions;
+export const { setThesis, resetState } = thesisSlice.actions;
 export default thesisSlice.reducer;

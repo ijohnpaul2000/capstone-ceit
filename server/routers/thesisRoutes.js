@@ -19,9 +19,9 @@ const {
 router.post(
   "/",
   fileUpload({ createParentPath: true }),
+  filesPayloadExists,
   fileExtLimiter([".pdf", ".doc", ".docx"]),
   fileSizeLimiter,
-  filesPayloadExists,
   createThesis
 );
 router.get("/", getThesis);

@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
+
+import { logout, resetState as resetThesis } from "../features/thesisSlice";
 import { login, resetLoading, resetState } from "../features/authSlice";
 
 import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
@@ -47,6 +49,7 @@ const UserLogin = () => {
 
   useEffect(() => {
     dispatch(resetState());
+    dispatch(resetThesis());
   }, []);
 
   return (
