@@ -10,6 +10,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRef } from "react";
 
 import axios from "axios";
+import { ToastContainer } from "react-toastify";
+import { notifyToast } from "../utils/notifyToast";
 
 const AddThesis = () => {
   const pdfRef = useRef(null);
@@ -52,10 +54,10 @@ const AddThesis = () => {
         data: data,
       })
         .then((res) => {
-          console.log(res.data);
+          notifyToast("Thesis Created!", "success");
         })
         .catch((err) => {
-          console.log(err);
+          notifyToast(err.response.data.message, "error");
         });
     },
   });
@@ -451,6 +453,7 @@ const AddThesis = () => {
           <Button type="submit">Create Thesis</Button>
         </div>
       </form>
+      <ToastContainer />
     </Dialog>
   );
 };

@@ -1,6 +1,7 @@
 const expressAsyncHandler = require("express-async-handler");
 const { v4 } = require("uuid");
 const path = require("path");
+const fs = require("fs");
 
 const Thesis = require("../models/").Thesis;
 
@@ -33,6 +34,8 @@ const createThesis = expressAsyncHandler(async (req, res) => {
     _thesisId: v4(),
     journal_filepath: pdf_filepath,
     softcopy_filepath: excel_filepath,
+    journal_filename: files.journal_filepath.name,
+    softcopy_filename: files.softcopy_filepath.name,
     ...req.body,
   });
 
@@ -43,26 +46,69 @@ const getThesis = expressAsyncHandler(async (req, res) => {
   res.status(200).json(thesis);
 });
 
-const getThesisById = expressAsyncHandler(async (req, res) => {});
-const updateThesis = expressAsyncHandler(async (req, res) => {});
-const deleteThesis = expressAsyncHandler(async (req, res) => {});
+const getThesisById = expressAsyncHandler(async (req, res) => {
+  const { _thesisId } = req.params;
+  const thesis = await Thesis.findOne({ where: { _thesisId } });
+
+  if (!thesis) {
+    return res
+      .status(404)
+      .json({ status: "error", message: "Thesis not found" });
+  }
+  res.status(200).json(thesis);
+});
+const updateThesis = expressAsyncHandler(async (req, res) => {
+  const { _thesisId } = req.params;
+  const thesis = await Thesis.findOne({ where: { _thesisId } });
+
+  if (!thesis) {
+    return res
+      .status(404)
+      .json({ status: "error", message: "Thesis not found" });
+  }
+  const newThesis = {
+    ...req.body,
+  };
+
+  await Thesis.update(newThesis, { where: { _thesisId } });
+  res.status(200).json(newThesis);
+});
+const deleteThesis = expressAsyncHandler(async (req, res) => {
+  const { _thesisId } = req.params;
+  const thesis = await Thesis.findOne({ where: { _thesisId } });
+
+  if (!thesis) {
+    return res
+      .status(404)
+      .json({ status: "error", message: "Thesis not found" });
+  }
+  await Thesis.destroy({ where: { _thesisId } });
+  res.status(200).json({ status: "success", message: "Thesis deleted" });
+});
 
 const getJournal = expressAsyncHandler(async (req, res) => {
-  const thesis = await Thesis.findOne({
-    where: { _thesisId: req.params._thesisId },
-  });
+  const { _thesisId } = req.params;
 
-  res.download(thesis.journal_filepath);
+  const thesis = await Thesis.findOne({
+    where: { _thesisId },
+  });
+  const filename =
+    __dirname + "/../files/journal_filepath/" + thesis.journal_filename;
+
+  res.download(filename);
 });
 
 const getSoftcopy = expressAsyncHandler(async (req, res) => {
+  const { _thesisId } = req.params;
+
   const thesis = await Thesis.findOne({
-    where: { _thesisId: req.params._thesisId },
+    where: { _thesisId },
   });
 
-  console.log(thesis.softcopy_filepath);
+  const filename =
+    __dirname + "/../files/softcopy_filepath/" + thesis.softcopy_filename;
 
-  res.download(path.resolve(thesis.softcopy_filepath));
+  res.download(filename);
 });
 
 module.exports = {

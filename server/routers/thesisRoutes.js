@@ -1,6 +1,11 @@
 const router = require("express").Router();
 const fileUpload = require("express-fileupload");
 
+//* Middlewares for file upload
+const fileExtLimiter = require("../middlewares/fileExtLimiter");
+const fileSizeLimiter = require("../middlewares/fileSizeLimiter");
+const filesPayloadExists = require("../middlewares/filesPayloadExists");
+
 const {
   createThesis,
   getThesis,
@@ -11,7 +16,14 @@ const {
   getSoftcopy,
 } = require("../controllers/thesisController");
 
-router.post("/", fileUpload({ createParentPath: true }), createThesis);
+router.post(
+  "/",
+  fileUpload({ createParentPath: true }),
+  fileExtLimiter([".pdf", ".doc", ".docx"]),
+  fileSizeLimiter,
+  filesPayloadExists,
+  createThesis
+);
 router.get("/", getThesis);
 router.get("/:_thesisId", getThesisById);
 router.put("/:_thesisId", updateThesis);

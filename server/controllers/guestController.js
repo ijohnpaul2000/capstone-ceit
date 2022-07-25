@@ -38,6 +38,7 @@ const getGuest = expressAsyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
 const getGuestById = expressAsyncHandler(async (req, res) => {
   const { _guestId } = req.params;
   const existingGuest = await Guest.findOne({ where: { _guestId } });
@@ -48,6 +49,7 @@ const getGuestById = expressAsyncHandler(async (req, res) => {
     res.status(200).json(existingGuest);
   }
 });
+
 const updateGuest = expressAsyncHandler(async (req, res) => {
   const { _guestId } = req.params;
   const { guestPassword, permittedBy } = req.body;

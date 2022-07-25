@@ -17,7 +17,7 @@ function App() {
           <Route path={`/auth/guest`} element={<GuestLogin />} />
         </Route>
 
-        <Route path={`/manuscript/dashboard`} element={<Table />} />
+        <Route path={`/manuscript/dashboard`} element={<Dashboard />} />
       </Routes>
       <Footer />
     </BrowserRouter>

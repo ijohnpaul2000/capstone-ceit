@@ -77,6 +77,12 @@ module.exports = (sequelize, DataTypes) => {
       softcopy_filepath: {
         type: DataTypes.STRING,
       },
+      journal_filename: {
+        type: DataTypes.STRING,
+      },
+      softcopy_filename: {
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,
