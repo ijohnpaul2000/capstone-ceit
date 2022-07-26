@@ -3,8 +3,7 @@ import React, { useEffect } from "react";
 import { openModal, closeModal } from "../features/modalSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-import { resetState } from "../features/thesisSlice";
-import { logout } from "../features/thesisSlice";
+import { setIsSubmitting } from "../features/thesisSlice";
 
 import { Button } from "primereact/button";
 
@@ -22,7 +21,13 @@ const Dashboard = () => {
   }
   return (
     <>
-      <Button onClick={() => dispatch(openModal())}>Open Modal</Button>
+      <Button
+        onClick={() => {
+          dispatch(openModal());
+        }}
+      >
+        Open Modal
+      </Button>
       {currentModal && <AddThesis />}
 
       <ManuscriptTable />

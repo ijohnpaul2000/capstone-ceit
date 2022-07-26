@@ -7,10 +7,11 @@ import { useSelector, useDispatch } from "react-redux";
 const Table = () => {
   const dispatch = useDispatch();
   const thesis = useSelector((state) => state.thesis.thesis);
+  const isSubmitting = useSelector((state) => state.thesis.isSubmitting);
 
   useEffect(() => {
     dispatch(getThesis());
-  }, []);
+  }, [isSubmitting]);
 
   const Files = thesis.map((item) => (
     <div key={item._thesisId}>
@@ -31,7 +32,7 @@ const Table = () => {
   ));
 
   if (thesis.length === 0) {
-    return <div>Loading...</div>;
+    return <div>No Thesis Found. </div>;
   }
 
   return <div>{Files}</div>;

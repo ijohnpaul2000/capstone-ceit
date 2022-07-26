@@ -20,7 +20,7 @@ PrimeReact.ripple = true;
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <PersistGate persistor={persistor}>
+    <PersistGate persistor={persistor} loading={null}>
       <App />
     </PersistGate>
   </Provider>
