@@ -322,8 +322,7 @@ const AddThesis = () => {
                   id="grades"
                   name="grades"
                   type="number"
-                  min={1}
-                  step={0.01}
+
                   className="w-full"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -458,7 +457,6 @@ const AddThesis = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.softcopy_filepath}
-                q
               />
             </div>
           </div>
