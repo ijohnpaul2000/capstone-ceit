@@ -310,7 +310,7 @@ const AddThesis = () => {
                 <input
                   id="grades"
                   name="grades"
-                  type="text"
+                  type="number"
                   className="w-full"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -445,7 +445,6 @@ const AddThesis = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.softcopy_filepath}
-                q
               />
             </div>
           </div>
