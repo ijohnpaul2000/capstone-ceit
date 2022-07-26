@@ -21,8 +21,8 @@ export const initialValues = {
 };
 
 export const validationSchema = Yup.object().shape({
-  title: Yup.string().required("title is required"),
-  abstract: Yup.string().required("abstract is required"),
+  title: Yup.string().required("Title is required"),
+  abstract: Yup.string().required("Abstract is required"),
   course: Yup.string().required("Course is required"),
   yearLevel: Yup.number().required("Year level is required"),
   section: Yup.number().required("Section is required"),

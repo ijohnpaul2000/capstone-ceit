@@ -8,6 +8,9 @@
   .addThesisForm input {
     @apply bg-inputBox  border-[1px] border-gray-500 rounded-lg py-3 px-2 mt-2;
   }
+  .addThesisForm select {
+    @apply bg-inputBox  border-[1px] border-gray-500 rounded-lg py-3 px-2 mt-2;
+  }
   .addThesisForm textarea {
     @apply bg-inputBox border-[1px] border-gray-500 rounded-lg py-3 px-2 mt-2;
   }

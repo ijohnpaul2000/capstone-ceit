@@ -2,7 +2,9 @@ const expressAsyncHandler = require("express-async-handler");
 const { v4 } = require("uuid");
 const path = require("path");
 const fs = require("fs");
+const moment = require("moment");
 
+const { generateDate } = require("../utils/generateDate");
 const Thesis = require("../models/").Thesis;
 
 require("dotenv").config({ path: process.env.ENV_VARIABLE_FILE_PATH });
@@ -12,7 +14,12 @@ const createThesis = expressAsyncHandler(async (req, res) => {
 
   //* Looping through the uploaded files (multiple)
   Object.keys(files).forEach((key) => {
-    const filepath = path.join(__dirname, `../files/${key}`, files[key].name);
+    const filepath = path.join(
+      __dirname,
+      `../files/${key}`,
+      v4() + "_" + files[key].name
+    );
+
     files[key].mv(filepath, (err) => {
       if (err) return res.status(500).json({ status: "error", message: err });
     });
@@ -24,9 +31,17 @@ const createThesis = expressAsyncHandler(async (req, res) => {
   //* Checking if the files upload are either .pdf or .xlsx then set the filepath to the respective variables.
   Object.keys(files).forEach((key) => {
     if (key === "journal_filepath") {
-      pdf_filepath = path.join(__dirname, `../files/${key}`, files[key].name);
+      pdf_filepath = path.join(
+        __dirname,
+        `../files/${key}`,
+        v4() + "_" + files[key].name
+      );
     } else if (key === "softcopy_filepath") {
-      excel_filepath = path.join(__dirname, `../files/${key}`, files[key].name);
+      excel_filepath = path.join(
+        __dirname,
+        `../files/${key}`,
+        v4() + "_" + files[key].name
+      );
     }
   });
 
@@ -34,8 +49,8 @@ const createThesis = expressAsyncHandler(async (req, res) => {
     _thesisId: v4(),
     journal_filepath: pdf_filepath,
     softcopy_filepath: excel_filepath,
-    journal_filename: files.journal_filepath.name,
-    softcopy_filename: files.softcopy_filepath.name,
+    journal_filename: v4() + "_" + files.journal_filepath.name,
+    softcopy_filename: v4() + "_" + files.softcopy_filepath.name,
     ...req.body,
   });
 

@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 
 //* DataTable imports
 import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { ColumnGroup } from "primereact/columngroup";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
+import { Row } from "primereact/row";
 
 //* Redux imports
 import { useSelector, useDispatch } from "react-redux";
@@ -16,7 +18,6 @@ import { getThesis, setThesis } from "../features/thesisSlice";
 const ManuscriptTable = () => {
   const [filters, setFilters] = useState(null);
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [loading1, setLoading1] = useState(true);
 
   const dispatch = useDispatch();
   const thesis = useSelector((state) => state.thesis.thesis);
@@ -121,25 +122,64 @@ const ManuscriptTable = () => {
 
   const header = renderHeader();
 
+  let headerGroup = (
+    <ColumnGroup>
+      <Row>
+        <Column
+          header="Title"
+          filter
+          filterPlaceholder="Search by Title"
+          rowSpan={2}
+          style={{
+            minWidth: "50rem",
+            justifyContent: "center",
+            whiteSpace: "wrap",
+          }}
+          resizeable={true}
+        />
+        <Column header="Course &amp; Section" colSpan={3} align="center" />
+        <Column header="Year Published" rowSpan={2} filter />
+        <Column header="Authors" rowSpan={2} filter />
+        <Column header="Panelist" rowSpan={2} filter />
+        <Column header="Adviser" rowSpan={2} filter />
+        <Column header="Chairperson" rowSpan={2} filter />
+        <Column header="Dean" rowSpan={2} filter />
+      </Row>
+      <Row>
+        <Column header="Course" filter />
+        <Column header="Year Level" filter />
+        <Column header="Section" filter />
+      </Row>
+    </ColumnGroup>
+  );
   return (
     <DataTable
       value={thesis}
+      scrollable
+      scrollHeight="500px"
+      resizableColumns
+      columnResizeMode="expand"
       responsiveLayout="scroll"
-      paginator
-      filters={filters}
-      dataKey="id"
-      emptyMessage="No records found"
+      dataKey="thesisId"
+      size="large"
       rows={10}
+      showGridlines
+      stripedRows
+      paginator
+      sortMode="single"
+      header={header}
+      headerColumnGroup={headerGroup}
     >
-      <Column
-        field="title"
-        header="Title"
-        filter
-        filterPlaceholder="Search by Title"
-      />
-      <Column field={`course`} sortable header="Course & Section" />
-      <Column field="yearLevel" sortable header="Year Level" />
-      <Column field="section" sortable header="Section" />
+      <Column field="title" />
+      <Column field="course" />
+      <Column field="yearLevel" />
+      <Column field="section" />
+      <Column field="yearPublished" />
+      <Column field="authors" />
+      <Column field="panelists" />
+      <Column field="adviser" />
+      <Column field="chairperson" />
+      <Column field="dean" />
     </DataTable>
   );
 };

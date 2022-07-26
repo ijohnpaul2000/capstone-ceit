@@ -10,6 +10,7 @@ import { Button } from "primereact/button";
 import AddThesis from "../components/AddThesis";
 
 import ManuscriptTable from "../components/ManuscriptTable";
+import TestTable from "../components/TestTable";
 const Dashboard = () => {
   const dispatch = useDispatch();
 
@@ -30,7 +31,7 @@ const Dashboard = () => {
       </Button>
       {currentModal && <AddThesis />}
 
-      <ManuscriptTable />
+      <TestTable />
     </>
   );
 };

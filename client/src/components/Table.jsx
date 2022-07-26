@@ -11,7 +11,7 @@ const Table = () => {
 
   useEffect(() => {
     dispatch(getThesis());
-  }, [isSubmitting]);
+  }, []);
 
   const Files = thesis.map((item) => (
     <div key={item._thesisId}>

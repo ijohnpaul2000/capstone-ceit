@@ -58,11 +58,12 @@ const AddThesis = () => {
         .then((res) => {
           notifyToast("Thesis Created!", "success");
           dispatch(setIsSubmitting(true));
-          dispatch(setIsSubmitting(false));
+          console.log(res.data);
         })
         .catch((err) => {
           notifyToast(err.response.data.message, "error");
         });
+      dispatch(setIsSubmitting(false));
     },
   });
 
@@ -113,15 +114,18 @@ const AddThesis = () => {
                 {formik.touched.course && formik.errors.course ? (
                   <div className="text-red-400">{formik.errors.course}</div>
                 ) : null}
-                <input
+                <select
                   id="course"
                   name="course"
-                  type="text"
-                  className="w-full"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.course}
-                />
+                  className="w-full"
+                  defaultValue="IT"
+                >
+                  <option value="IT">Information Technology</option>
+                  <option value="CE">Civil Engineering</option>
+                  <option value="EE">Electrical Engineering</option>
+                </select>
               </div>
               <div className="grid gap-y-4">
                 <label
@@ -254,6 +258,7 @@ const AddThesis = () => {
                   id="yearPublished"
                   name="yearPublished"
                   type="date"
+                  min="2002-06-05"
                   className="w-full"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -322,7 +327,6 @@ const AddThesis = () => {
                   id="grades"
                   name="grades"
                   type="number"
-
                   className="w-full"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}

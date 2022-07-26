@@ -47,10 +47,12 @@ const thesisSlice = createSlice({
     [getThesis.fulfilled]: (state, action) => {
       state.isLoading = false;
       state.thesis = action.payload;
+      state.isSubmitting = false;
     },
     [getThesis.rejected]: (state, action) => {
       state.isLoading = false;
       state.error = action.error;
+      state.isSubmitting = false;
     },
   },
 });

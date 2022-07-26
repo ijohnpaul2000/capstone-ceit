@@ -1,0 +1,83 @@
+export const header = [
+  {
+    field: "_thesisId",
+    header: "Thesis ID",
+    style: "3rem",
+    resizeable: false,
+    justifyContent: "center",
+  },
+  { field: "title", header: "Title", style: "3rem", justifyContent: "left" },
+  {
+    field: "yearLevel",
+    header: "Year Level",
+    style: "3rem",
+    justifyContent: "center",
+  },
+  {
+    field: "section",
+    header: "Section",
+    style: "3rem",
+    justifyContent: "center",
+  },
+  {
+    field: "course",
+    header: "Course",
+    style: "20rem",
+    justifyContent: "left",
+  },
+  {
+    field: "yearPublished",
+    header: "Year Published",
+    style: "3rem",
+    justifyContent: "center",
+  },
+  {
+    field: "authors",
+    header: "Authors",
+    style: "20rem",
+    justifyContent: "left",
+  },
+  {
+    field: "panelists",
+    header: "Panelists",
+    style: "15rem",
+    justifyContent: "left",
+  },
+  {
+    field: "copies",
+    header: "Copies",
+    style: "3rem",
+    justifyContent: "center",
+  },
+  {
+    field: "volume",
+    header: "Volume",
+    style: "3rem",
+    justifyContent: "center",
+  },
+  {
+    field: "grades",
+    header: "Grades",
+    style: "3rem",
+    justifyContent: "center",
+  },
+  {
+    field: "keywords",
+    header: "Keywords",
+    style: "15rem",
+    justifyContent: "center",
+  },
+  {
+    field: "adviser",
+    header: "Adviser",
+    style: "8rem",
+    justifyContent: "center",
+  },
+  {
+    field: "chairperson",
+    header: "Chairperson",
+    style: "8rem",
+    justifyContent: "center",
+  },
+  { field: "dean", header: "Dean", style: "8rem", justifyContent: "center" },
+];
