@@ -120,8 +120,10 @@ const AddThesis = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   className="w-full"
-                  defaultValue="IT"
+                  value={formik.values.course}
+                  defaultValue={formik.values.course}
                 >
+                  <option></option>
                   <option value="IT">Information Technology</option>
                   <option value="CE">Civil Engineering</option>
                   <option value="EE">Electrical Engineering</option>

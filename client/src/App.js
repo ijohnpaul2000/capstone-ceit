@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AddThesis from "./components/AddThesis";
 import Footer from "./components/Footer";
-import Table from "./components/Table";
 import SharedLayout from "./layout/SharedLayout";
 import Dashboard from "./pages/Dashboard";
 import GuestLogin from "./pages/GuestLogin";
