@@ -12,6 +12,9 @@ import modalReducer from "../features/modalSlice";
 //* thesisSlice
 import thesisReducer from "../features/thesisSlice";
 
+//* selectionSlice
+import selectionReducer from "../features/selectionSlice";
+
 const persistConfig = {
   key: "root",
   storage,
@@ -21,6 +24,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   modal: modalReducer,
   thesis: thesisReducer,
+  selection: selectionReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

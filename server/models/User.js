@@ -1,3 +1,14 @@
+const generateSecretKey = () => {
+  let result = "";
+  let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let charLength = chars.length;
+
+  for (let i = 0; i < 10; i++) {
+    result += chars.charAt(Math.floor(Math.random() * charLength));
+  }
+  return result;
+};
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     "User",
@@ -18,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       role: {
         type: DataTypes.STRING,
+      },
+      secretKey: {
+        type: DataTypes.STRING,
+        defaultValue: generateSecretKey(),
       },
     },
     {

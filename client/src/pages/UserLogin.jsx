@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
 import { logout, resetState as resetThesis } from "../features/thesisSlice";
-import { login, resetLoading, resetState } from "../features/authSlice";
+import { login, resetState } from "../features/authSlice";
 
-import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
+import { useFormik } from "formik";
 import { initialValues, validationSchema } from "../yupUtils/auth/userLogin";
 import axios from "axios";
 
@@ -17,7 +17,6 @@ import { useEffect } from "react";
 
 const UserLogin = () => {
   const URL = "http://localhost:5000/api/auth/user";
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.user);
@@ -37,12 +36,11 @@ const UserLogin = () => {
             navigate("/manuscript/dashboard");
           }, 3000);
           dispatch(login(res.data));
-          console.log(res.data);
 
-          //* localStorage.setItem("User", res.data.token);
+          sessionStorage.setItem("User", res.data.token);
         })
         .catch((err) => {
-          notifyToast(err.response.data.message.toString(), "error");
+          notifyToast(err.response.data.message, "error");
         });
     },
   });
@@ -50,7 +48,7 @@ const UserLogin = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(resetThesis());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="w-screen h-full px-4 ">
@@ -116,7 +114,13 @@ const UserLogin = () => {
               </div>
             )}
 
-            <div className="w-full h-full flex justify-end">
+            <div className="w-full h-full flex justify-between items-center">
+              <Link
+                to="/auth/forgotpassword"
+                className="text-blue-400 underline underline-offset-2"
+              >
+                Forgot Password?
+              </Link>
               <button
                 type="submit"
                 className="px-12 py-2 rounded-xl text-h4 font-roboto font-medium text-white bg-button"

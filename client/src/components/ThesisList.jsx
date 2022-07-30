@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FaFileDownload } from "react-icons/fa";
 
 //* DataTable imports
 import { DataTable } from "primereact/datatable";
@@ -6,22 +7,26 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { ColumnGroup } from "primereact/columngroup";
-import { Row } from "primereact/row";
-import { Calendar } from "primereact/calendar";
 import { MultiSelect } from "primereact/multiselect";
 
 //* Redux imports
 import { useDispatch, useSelector } from "react-redux";
 import { getThesis } from "../features/thesisSlice";
+import CrudOptions from "./CrudOptions";
+import { resetState, selectThesis } from "../features/selectionSlice";
+import { useRef } from "react";
+import Logout from "./Logout";
+import DownloadAudits from "./DownloadAudits";
 
 const ThesisList = () => {
   const dispatch = useDispatch();
   const thesis = useSelector((state) => state.thesis.thesis);
+
+  const { role } = useSelector((state) => state.auth.user);
   const isSubmitting = useSelector((state) => state.thesis.isSubmitting);
+  const { selection } = useSelector((state) => state.selection);
   const [filters, setFilters] = useState(null);
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [selectedThesis, setSelectedThesis] = useState(undefined);
   const columns = [
     { field: "title", header: "Title" },
     { field: "course", header: "Course" },
@@ -41,6 +46,12 @@ const ThesisList = () => {
   ];
 
   const [selectedColumns, setSelectedColumns] = useState(columns);
+
+  const dt = useRef(null);
+
+  const exportCSV = (selectionOnly) => {
+    dt.current.exportCSV({ selectionOnly });
+  };
 
   const onColumnToggle = (event) => {
     let selectedColumns = event.value;
@@ -129,52 +140,38 @@ const ThesisList = () => {
 
   const renderHeader = () => {
     return (
-      <div className="flex ">
-        <Button
-          type="button"
-          icon="pi pi-filter-slash"
-          label="Clear"
-          className="p-button-outlined "
-          onClick={clearFilter}
-        />
-        <span className="p-input-icon-left ml-4">
-          <i className="pi pi-search" />
-          <InputText
-            value={globalFilterValue}
-            onChange={onGlobalFilterChange}
-            placeholder="Keyword Search"
-          />
-        </span>
-        <MultiSelect
-          value={selectedColumns}
-          options={columns}
-          optionLabel="header"
-          onChange={onColumnToggle}
-          style={{ width: "20em" }}
-        />
+      <div className="max-w-[1700px] mx-auto">
+        <div className="flex flex-col md:flex md:flex-row justify-between items-start md:items-end  gap-y-4">
+          <div className="flex flex-col mt-4 gap-y-4">
+            <label>Toggle Columns</label>
+            <MultiSelect
+              value={selectedColumns}
+              options={columns}
+              optionLabel="header"
+              onChange={onColumnToggle}
+              style={{ width: "20em" }}
+            />
+          </div>
+          <div className="">
+            <Button
+              type="button"
+              icon="pi pi-filter-slash"
+              label="Clear"
+              className="p-button-outlined "
+              onClick={clearFilter}
+            />
+            <span className="p-input-icon-left ml-4">
+              <i className="pi pi-search" />
+              <InputText
+                value={globalFilterValue}
+                onChange={onGlobalFilterChange}
+                placeholder="Keyword Search"
+              />
+            </span>
+          </div>
+        </div>
       </div>
     );
-  };
-  const dateFilterTemplate = (options) => {
-    return (
-      <Calendar
-        value={options.value}
-        onChange={(e) => options.filterCallback(e.value, options.index)}
-        dateFormat="mm/dd/yy"
-        placeholder="mm/dd/yyyy"
-        mask="99/99/9999"
-      />
-    );
-  };
-  const dateBodyTemplate = (rowData) => {
-    return formatDate(rowData.date);
-  };
-  const formatDate = (value) => {
-    return value.toLocaleDateString("en-US", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
   };
 
   const header = renderHeader();
@@ -187,6 +184,10 @@ const ThesisList = () => {
         header={col.header}
         filter
         filterPlaceholder={`Search by ${col.header}`}
+        style={{ width: "200px" }}
+        className={`${
+          col.field === "abstract" ? "truncate whitespace-normal" : ""
+        }`}
       />
     );
   });
@@ -194,158 +195,73 @@ const ThesisList = () => {
   useEffect(() => {
     initFilters();
     dispatch(getThesis());
-  }, [isSubmitting]);
-
-  const headerGroup = (
-    <ColumnGroup>
-      <Row>
-        <Column
-          field="title"
-          header="Title"
-          filter
-          filterPlaceholder="Search by Title"
-          rowSpan={3}
-        />
-
-        <Column header="Course &amp; Section" colSpan={3} align="center" />
-        <Column
-          header="Year Published"
-          filterField="yearPublished"
-          field="yearPublished"
-          dataType="date"
-          style={{ minWidth: "10rem" }}
-          body={dateBodyTemplate}
-          filter
-          filterElement={dateFilterTemplate}
-          rowSpan={3}
-        />
-        <Column
-          field="authors"
-          header="Authors"
-          filter
-          filterPlaceholder="Search by Authors"
-          rowSpan={3}
-        />
-        <Column
-          field="panelists"
-          header="Panelists"
-          filter
-          filterPlaceholder="Search by Panelists"
-          rowSpan={3}
-        />
-        <Column
-          field="copies"
-          header="Copies"
-          filter
-          filterPlaceholder="Search by No. of Copies"
-          rowSpan={3}
-        />
-        <Column
-          field="volume"
-          header="Volume"
-          filter
-          filterPlaceholder="Search by No. of Volumes"
-          rowSpan={3}
-        />
-        <Column
-          field="grades"
-          header="Grades"
-          filter
-          filterPlaceholder="Search by Grades"
-          rowSpan={3}
-        />
-        <Column
-          field="keywords"
-          header="Keywords"
-          filter
-          filterPlaceholder="Search by Keywords"
-          rowSpan={3}
-        />
-        <Column
-          field="adviser"
-          header="Adviser"
-          filter
-          filterPlaceholder="Search by Adviser"
-          rowSpan={3}
-        />
-        <Column
-          field="chairperson"
-          header="Chairperson"
-          filter
-          filterPlaceholder="Search by Chairperson"
-          rowSpan={3}
-        />
-        <Column
-          field="dean"
-          header="Dean"
-          filter
-          filterPlaceholder="Search by Dean"
-          rowSpan={3}
-        />
-      </Row>
-
-      <Row>
-        <Column
-          field="course"
-          header="Course"
-          filter
-          filterPlaceholder="Search by Course"
-        />
-        <Column
-          field="yearLevel"
-          header="Year Level"
-          filter
-          filterPlaceholder="Search by Year Level"
-        />
-        <Column
-          field="section"
-          header="Section"
-          filter
-          filterPlaceholder="Search by Section"
-        />
-      </Row>
-    </ColumnGroup>
-  );
+  }, [isSubmitting, dispatch]);
+  const isPermittedToDownload =
+    role.toString().includes("Dean") || role.toString().includes("Chairperson");
 
   return (
-    <DataTable
-      value={thesis}
-      paginator
-      className="p-datatable-customers"
-      showGridlines
-      rows={10}
-      dataKey="_thesisId"
-      size="normal"
-      filters={filters}
-      filterDisplay="menu"
-      responsiveLayout="scroll"
-      globalFilterFields={[
-        "title",
-        "course",
-        "yearLevel",
-        "section",
-        "yearPublished",
-        "authors",
-        "panelists",
-        "copies",
-        "volume",
-        "grades",
-        "keywords",
-        "adviser",
-        "chairperson",
-        "dean",
-      ]}
-      header={header}
-      emptyMessage="No capstone found."
-      selectionMode="single"
-      selection={selectedThesis}
-      onSelectionChange={(e) => {
-        console.log(e.value);
-        setSelectedThesis(e.value);
-      }}
-    >
-      {columnComponents}
-    </DataTable>
+    <div className="px-4">
+      <div className="max-w-[1700px] mx-auto">
+        <div className="flex justify-between">
+          <div className="flex flex-col ">
+            <h1 className="text-h2 font-roboto font-bold text-textColor">
+              CEIT Manuscript Information System
+            </h1>
+            <p className="font-roboto mb-4 text-lg">
+              Currently signed in as:{" "}
+              <span className="text-blue-500 font-roboto text-xl">{`${role}`}</span>
+            </p>
+          </div>
+          <div className="flex items-end justify-end gap-x-4">
+            {isPermittedToDownload && <DownloadAudits />}
+            <Logout />
+          </div>
+        </div>
+      </div>
+      <CrudOptions exportCSV={exportCSV} />
+      <DataTable
+        value={thesis}
+        paginator
+        className="mb-4 max-w-[1700px] mx-auto rounded-lg "
+        showGridlines
+        rows={6}
+        dataKey="_thesisId"
+        size="small"
+        filters={filters}
+        filterDisplay="menu"
+        responsiveLayout="scroll"
+        globalFilterFields={[
+          "title",
+          "course",
+          "yearLevel",
+          "section",
+          "yearPublished",
+          "authors",
+          "panelists",
+          "copies",
+          "volume",
+          "grades",
+          "keywords",
+          "adviser",
+          "chairperson",
+          "dean",
+        ]}
+        header={header}
+        emptyMessage="No capstone found."
+        selectionMode="single"
+        selection={selection}
+        onRowDoubleClick={() => dispatch(resetState())}
+        onSelectionChange={(e) => {
+          dispatch(selectThesis(e.value));
+        }}
+        stateStorage="local"
+        stateKey="dt-state"
+        ref={dt}
+        stripedRows
+      >
+        {columnComponents}
+      </DataTable>
+    </div>
   );
 };
 

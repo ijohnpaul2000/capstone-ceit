@@ -102,6 +102,48 @@ const deleteUser = expressAsyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+const forgotPassword = expressAsyncHandler(async (req, res) => {
+  const {
+    username,
+    currentPassword,
+    newPassword,
+    confirmNewPassword,
+    secretKey,
+  } = req.body;
+
+  if (!username) {
+    return res.status(400).json({ message: "Username is required" });
+  }
+  const existingUser = await User.findOne({ where: { username } });
+
+  if (!bcrypt.compareSync(currentPassword, existingUser.password)) {
+    return res.status(400).json({ message: "Current password is incorrect" });
+  }
+  if (newPassword !== confirmNewPassword) {
+    return res.status(400).json({ message: "New password doesn't match" });
+  }
+
+  if (!existingUser) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  const genSalt = 10;
+  const newHashedPassword = bcrypt.hashSync(newPassword, genSalt);
+
+  const updateUserPassword = {
+    password: newHashedPassword,
+  };
+
+  try {
+    if (secretKey === existingUser.secretKey) {
+      await User.update(updateUserPassword, { where: { username } });
+      res.status(200).json({ message: "Password updated successfully" });
+    } else {
+      return res.status(400).json({ message: "Secret key is incorrect" });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
 module.exports = {
   createUser,
@@ -109,4 +151,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserById,
+  forgotPassword,
 };

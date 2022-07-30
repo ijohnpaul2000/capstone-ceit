@@ -26,11 +26,15 @@ module.exports = (sequelize, DataTypes) => {
       },
       expiredAt: {
         type: DataTypes.DATE,
-        defaultValue: moment().add(1, "d").format("YYYY-MM-DD HH:mm:ss"),
+        defaultValue: moment().add(1, "w").format("YYYY-MM-DD HH:mm:ss"),
       },
       isValid: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
+      },
+      role: {
+        type: DataTypes.STRING,
+        defaultValue: "Guest",
       },
     },
     {

@@ -11,13 +11,15 @@ require("dotenv").config({ path: process.env.ENV_VARIABLE_FILE_PATH });
 
 const createThesis = expressAsyncHandler(async (req, res) => {
   const files = req.files;
+  req.headers.authorization;
+  let uniquePrefix = v4();
 
   //* Looping through the uploaded files (multiple)
   Object.keys(files).forEach((key) => {
     const filepath = path.join(
       __dirname,
       `../files/${key}`,
-      v4() + "_" + files[key].name
+      uniquePrefix + "_" + files[key].name
     );
 
     files[key].mv(filepath, (err) => {
@@ -34,13 +36,13 @@ const createThesis = expressAsyncHandler(async (req, res) => {
       pdf_filepath = path.join(
         __dirname,
         `../files/${key}`,
-        v4() + "_" + files[key].name
+        uniquePrefix + "_" + files[key].name
       );
     } else if (key === "softcopy_filepath") {
       excel_filepath = path.join(
         __dirname,
         `../files/${key}`,
-        v4() + "_" + files[key].name
+        uniquePrefix + "_" + files[key].name
       );
     }
   });
@@ -49,8 +51,8 @@ const createThesis = expressAsyncHandler(async (req, res) => {
     _thesisId: v4(),
     journal_filepath: pdf_filepath,
     softcopy_filepath: excel_filepath,
-    journal_filename: v4() + "_" + files.journal_filepath.name,
-    softcopy_filename: v4() + "_" + files.softcopy_filepath.name,
+    journal_filename: uniquePrefix + "_" + files.journal_filepath.name,
+    softcopy_filename: uniquePrefix + "_" + files.softcopy_filepath.name,
     ...req.body,
   });
 
@@ -81,12 +83,65 @@ const updateThesis = expressAsyncHandler(async (req, res) => {
       .status(404)
       .json({ status: "error", message: "Thesis not found" });
   }
+
+  const files = req.files;
+
+  let uniquePrefix = v4();
+
+  //* Looping through the uploaded files (multiple)
+  Object.keys(files).forEach((key) => {
+    const filepath = path.join(
+      __dirname,
+      `../files/${key}`,
+      uniquePrefix + "_" + files[key].name
+    );
+
+    files[key].mv(filepath, (err) => {
+      if (err) return res.status(500).json({ status: "error", message: err });
+    });
+  });
+
+  let pdf_filepath = "";
+  let excel_filepath = "";
+
+  //* Checking if the files upload are either .pdf or .xlsx then set the filepath to the respective variables.
+  Object.keys(files).forEach((key) => {
+    if (key === "journal_filepath") {
+      pdf_filepath = path.join(
+        __dirname,
+        `../files/${key}`,
+        uniquePrefix + "_" + files[key].name
+      );
+    } else if (key === "softcopy_filepath") {
+      excel_filepath = path.join(
+        __dirname,
+        `../files/${key}`,
+        uniquePrefix + "_" + files[key].name
+      );
+    }
+  });
+  fs.unlink(thesis.journal_filepath, (err) => {
+    if (err) {
+      return res.status(200).json({ message: err });
+    }
+  });
+
+  fs.unlink(thesis.softcopy_filepath, (err) => {
+    if (err) {
+      return res.status(200).json({ message: err });
+    }
+  });
   const newThesis = {
+    _thesisId: v4(),
+    journal_filepath: pdf_filepath,
+    softcopy_filepath: excel_filepath,
+    journal_filename: uniquePrefix + "_" + files.journal_filepath.name,
+    softcopy_filename: uniquePrefix + "_" + files.softcopy_filepath.name,
     ...req.body,
   };
 
   await Thesis.update(newThesis, { where: { _thesisId } });
-  res.status(200).json(newThesis);
+  res.status(200).json(files);
 });
 const deleteThesis = expressAsyncHandler(async (req, res) => {
   const { _thesisId } = req.params;
@@ -97,6 +152,17 @@ const deleteThesis = expressAsyncHandler(async (req, res) => {
       .status(404)
       .json({ status: "error", message: "Thesis not found" });
   }
+  fs.unlink(thesis.journal_filepath, (err) => {
+    if (err) {
+      return res.status(200).json({ message: err });
+    }
+  });
+
+  fs.unlink(thesis.softcopy_filepath, (err) => {
+    if (err) {
+      return res.status(200).json({ message: err });
+    }
+  });
   await Thesis.destroy({ where: { _thesisId } });
   res.status(200).json({ status: "success", message: "Thesis deleted" });
 });

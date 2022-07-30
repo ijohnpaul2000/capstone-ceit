@@ -4,7 +4,10 @@ const initialState = {
   thesis: [],
   isLoading: false,
   isSubmitting: false,
+  isUpdating: false,
+  isDeleting: false,
   error: null,
+  currentMode: null,
 };
 
 const url = "http://localhost:5000/api/thesis";
@@ -14,7 +17,11 @@ export const getThesis = createAsyncThunk(
   // name is a parameter for dispatching in react app
   async (name, thunkAPI) => {
     try {
-      const response = await axios(url);
+      const response = await axios(url, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("User")}`,
+        },
+      });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -35,9 +42,21 @@ const thesisSlice = createSlice({
       state.thesis = [];
       state.isLoading = false;
       state.error = null;
+      state.isSubmitting = false;
+      state.isUpdating = false;
+      state.currentMode = null;
     },
     setIsSubmitting: (state, action) => {
       state.isSubmitting = action.payload;
+    },
+    setMode: (state, action) => {
+      state.currentMode = action.payload;
+    },
+    setIsUpdating: (state, action) => {
+      state.isUpdating = action.payload;
+    },
+    setIsDeleting: (state, action) => {
+      state.isDeleting = action.payload;
     },
   },
   extraReducers: {
@@ -48,6 +67,7 @@ const thesisSlice = createSlice({
       state.isLoading = false;
       state.thesis = action.payload;
       state.isSubmitting = false;
+      state.isUpdating = false;
     },
     [getThesis.rejected]: (state, action) => {
       state.isLoading = false;
@@ -57,5 +77,12 @@ const thesisSlice = createSlice({
   },
 });
 
-export const { setThesis, resetState, setIsSubmitting } = thesisSlice.actions;
+export const {
+  setThesis,
+  resetState,
+  setIsSubmitting,
+  setMode,
+  setIsUpdating,
+  setIsDeleting,
+} = thesisSlice.actions;
 export default thesisSlice.reducer;

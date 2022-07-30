@@ -68,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       abstract: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT("long"),
         allowNull: false,
       },
       journal_filepath: {

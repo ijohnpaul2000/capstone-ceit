@@ -1,37 +1,45 @@
 import React, { useEffect } from "react";
 
-import { openModal, closeModal } from "../features/modalSlice";
+import { closeModal } from "../features/modalSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getThesis, setIsSubmitting } from "../features/thesisSlice";
+import { getThesis } from "../features/thesisSlice";
 
-import { Button } from "primereact/button";
-
-import AddThesis from "../components/AddThesis";
+import MainThesisModal from "../modals/MainThesisModal";
 import ThesisList from "../components/ThesisList";
+import { resetState } from "../features/selectionSlice";
+import ConfirmationModal from "../modals/ConfirmationModal";
+import NotAuthenticated from "../components/NotAuthenticated";
+import Settings from "../components/Logout";
+import LogoutModal from "../modals/LogoutModal";
+import AddGuestModal from "../modals/AddGuestModal";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
 
-  const currentModal = useSelector((state) => state.modal.isOpen);
+  const {
+    isGeneralModalOpen,
+    isConfirmModalOpen,
+    isLogoutModalOpen,
+    isAddGuestModalOpen,
+  } = useSelector((state) => state.modal);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
     dispatch(getThesis());
-  }, []);
-  if (!isAuthenticated) {
-    return <p>Not authenticated</p>;
+    dispatch(closeModal());
+    dispatch(resetState());
+  }, [dispatch]);
+
+  if (!isAuthenticated || sessionStorage.getItem("User") === null) {
+    return <NotAuthenticated />;
   }
   return (
     <>
-      <Button
-        onClick={() => {
-          dispatch(openModal());
-        }}
-      >
-        Open Modal
-      </Button>
-      {currentModal && <AddThesis />}
+      {isGeneralModalOpen && <MainThesisModal />}
+      {isConfirmModalOpen && <ConfirmationModal />}
+      {isLogoutModalOpen && <LogoutModal />}
+      {isAddGuestModalOpen && <AddGuestModal />}
       <ThesisList />
     </>
   );

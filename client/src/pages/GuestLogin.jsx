@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
-import { login } from "../features/authSlice";
+import { login, resetState } from "../features/authSlice";
+import { resetState as resetThesis } from "../features/thesisSlice";
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { initialValues, validationSchema } from "../yupUtils/auth/guestLogin";
@@ -11,8 +12,10 @@ import { ToastContainer } from "react-toastify";
 import { notifyToast } from "../utils/notifyToast";
 
 import People from "../assets/People.png";
+import { useEffect } from "react";
 
 const GuestLogin = () => {
+  const isLoading = useSelector((state) => state.auth.isLoading);
   const URL = "http://localhost:5000/api/auth/guest";
 
   const navigate = useNavigate();
@@ -23,17 +26,24 @@ const GuestLogin = () => {
     axios
       .post(URL, data)
       .then((res) => {
-        console.log(res.data);
         notifyToast("Success! Redirecting...", "success");
         setTimeout(() => {
           navigate("/manuscript/dashboard");
         }, 3000);
         dispatch(login(res.data));
+
+        sessionStorage.setItem("User", res.data.token);
+        sessionStorage.setItem("Username", res.data.guestUsername);
       })
       .catch((err) => {
-        notifyToast(err.response.data.message.toString(), "error");
+        notifyToast(err.response.data.message, "error");
       });
   };
+  useEffect(() => {
+    dispatch(resetState());
+    dispatch(resetThesis());
+  }, [dispatch]);
+
   return (
     <div className="w-screen h-full px-4">
       <div className="max-w-[1400px] min-h-[calc(100vh-160px)] mx-auto grid grid-cols-1 gap-x-4 md:grid-cols-2 place-content-center">
@@ -82,7 +92,6 @@ const GuestLogin = () => {
                   className="py-4 px-2 bg-inputBox rounded-xl"
                 />
               </div>
-
               <div className="grid gap-y-4">
                 <label
                   htmlFor="guestPassword"
@@ -103,20 +112,27 @@ const GuestLogin = () => {
                   className="py-4 px-2 bg-inputBox rounded-xl"
                 />
               </div>
-
               {currentUser && (
                 <div className="bg-green-400 py-4 font-roboto px-4 rounded-xl text-white">
                   <p>Welcome {currentUser.guestUsername}!</p>
                 </div>
               )}
 
-              <div className="w-full h-full flex justify-end">
-                <button
-                  type="submit"
-                  className="px-12 py-2 rounded-xl text-h4 font-roboto font-medium text-white bg-button"
-                >
-                  Log in
-                </button>
+              <div className="w-full  flex justify-end">
+                <div className="max-w-[200px]">
+                  <button
+                    type="submit"
+                    className="px-12 py-2  rounded-xl text-h4 font-roboto font-medium text-white bg-button"
+                  >
+                    {isLoading ? (
+                      <>
+                        <p className="pi pi-spin pi-spinner"></p>
+                      </>
+                    ) : (
+                      "Log In"
+                    )}
+                  </button>
+                </div>
               </div>
             </Form>
           </Formik>

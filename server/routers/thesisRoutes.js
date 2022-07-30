@@ -15,6 +15,7 @@ const {
   getJournal,
   getSoftcopy,
 } = require("../controllers/thesisController");
+const { protect } = require("../middlewares/authMiddleware");
 
 router.post(
   "/",
@@ -22,12 +23,21 @@ router.post(
   filesPayloadExists,
   fileExtLimiter([".pdf", ".doc", ".docx"]),
   fileSizeLimiter,
+  protect,
   createThesis
 );
-router.get("/", getThesis);
-router.get("/:_thesisId", getThesisById);
-router.put("/:_thesisId", updateThesis);
-router.delete("/:_thesisId", deleteThesis);
+router.get("/", protect, getThesis);
+router.get("/:_thesisId", protect, getThesisById);
+router.put(
+  "/:_thesisId",
+  fileUpload({ createParentPath: true }),
+  filesPayloadExists,
+  fileExtLimiter([".pdf", ".doc", ".docx"]),
+  fileSizeLimiter,
+  protect,
+  updateThesis
+);
+router.delete("/:_thesisId", protect, deleteThesis);
 
 router.get("/:_thesisId/journal", getJournal);
 router.get("/:_thesisId/softcopy", getSoftcopy);
